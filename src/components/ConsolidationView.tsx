@@ -33,6 +33,7 @@ import {
   Columns,
   CheckSquare,
   ListFilter,
+  Languages,
 } from 'lucide-react';
 
 interface ConsolidationViewProps {
@@ -55,6 +56,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<ConsolidationTab>('vocabulary');
   const [activeActivityTab, setActiveActivityTab] = useState<ActivitySubTab>('all');
+  const [languageMode, setLanguageMode] = useState<'bilingual' | 'vi' | 'en'>('bilingual');
 
   // Search & Filter for Vocabulary
   const [vocabSearch, setVocabSearch] = useState('');
@@ -145,12 +147,13 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
     const matchesSearch =
       item.word.toLowerCase().includes(vocabSearch.toLowerCase()) ||
       item.definition.toLowerCase().includes(vocabSearch.toLowerCase()) ||
+      (item.definitionVi && item.definitionVi.toLowerCase().includes(vocabSearch.toLowerCase())) ||
       item.synonyms.some((s) => s.toLowerCase().includes(vocabSearch.toLowerCase()));
     const matchesBand = selectedBand === 'all' || item.ieltsBand.includes(selectedBand);
     return matchesSearch && matchesBand;
   });
 
-  // Activity Completion & Scoring Statistics
+  // Calculate stats for activities
   const matchingCorrectCount = Object.values(matchingFeedback).filter(Boolean).length;
   const gapFillCorrectCount = Object.keys(gapFillSubmitted).filter(
     (id) => gapFillAnswers[id] === GAP_FILL_TASKS.find((t) => t.id === id)?.targetWord
@@ -163,92 +166,141 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
   ).length;
 
   const totalTasks =
-    MATCHING_TASKS.length + GAP_FILL_TASKS.length + REFERENCE_TASKS.length + TRANSFORMATION_TASKS.length;
-  const completedTasks =
-    (matchingSubmitted ? MATCHING_TASKS.length : 0) +
-    Object.keys(gapFillSubmitted).length +
-    Object.keys(refSubmitted).length +
-    Object.keys(transSubmitted).length;
+    MATCHING_TASKS.length +
+    GAP_FILL_TASKS.length +
+    REFERENCE_TASKS.length +
+    TRANSFORMATION_TASKS.length;
+
   const totalCorrectTasks =
     matchingCorrectCount + gapFillCorrectCount + refCorrectCount + transCorrectCount;
 
   return (
     <div
-      className="flex-1 bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden select-text flex flex-col w-full"
-      style={{ minHeight: '600px', maxHeight: isFullWidth ? 'calc(100vh - 120px)' : 'calc(100vh - 170px)' }}
+      className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden flex flex-col w-full"
+      style={{ minHeight: '620px', maxHeight: 'calc(100vh - 170px)' }}
     >
-      {/* Header Banner */}
+      {/* Top Banner Header */}
       <div className="bg-[#0F172A] text-white p-4 sm:p-5 border-b border-slate-800 shrink-0">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-400 mb-1">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>Post-Reading Language & Skill Consolidation</span>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-amber-400 text-slate-950 flex items-center gap-1 shadow-xs">
+                <Sparkles className="w-3 h-3 fill-current" />
+                <span>Post-Reading Language & Skill Consolidation</span>
+              </span>
+              {isUnlockedAfterTest && (
+                <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  Unlocked from Practice
+                </span>
+              )}
             </div>
-            <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-white">
-              Passage 1: Lexical & Grammatical Masterclass
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
-              Comprehensive vocabulary recall, grammar mastery, and IELTS reading strategies.
+            <h2 className="text-base sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
+              <span>Deep Linguistic Analysis & Skills Extension</span>
+            </h2>
+            <p className="text-xs text-slate-300 max-w-3xl leading-relaxed">
+              Consolidate high-frequency academic vocabulary, decode complex IELTS sentence structures, analyze exam paraphrase patterns, and complete targeted skill drills.
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Language Mode Toggle */}
+            <div className="flex items-center bg-slate-800 border border-slate-700 rounded-lg p-0.5 text-xs shadow-xs">
+              <span className="px-1.5 text-slate-400 flex items-center gap-1 font-medium">
+                <Languages className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden sm:inline text-[11px]">Bilingual:</span>
+              </span>
+              <button
+                id="consolidation-lang-bilingual"
+                onClick={() => setLanguageMode('bilingual')}
+                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                  languageMode === 'bilingual'
+                    ? 'bg-amber-400 text-slate-950 shadow-xs'
+                    : 'text-slate-300 hover:text-white'
+                }`}
+                title="Song ngữ (English & Tiếng Việt)"
+              >
+                Song ngữ
+              </button>
+              <button
+                id="consolidation-lang-vi"
+                onClick={() => setLanguageMode('vi')}
+                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                  languageMode === 'vi'
+                    ? 'bg-amber-400 text-slate-950 shadow-xs'
+                    : 'text-slate-300 hover:text-white'
+                }`}
+                title="Tiếng Việt (Vietnamese focus)"
+              >
+                Tiếng Việt
+              </button>
+              <button
+                id="consolidation-lang-en"
+                onClick={() => setLanguageMode('en')}
+                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                  languageMode === 'en'
+                    ? 'bg-amber-400 text-slate-950 shadow-xs'
+                    : 'text-slate-300 hover:text-white'
+                }`}
+                title="English only"
+              >
+                English
+              </button>
+            </div>
+
             {/* Layout Toggle Button */}
             {onToggleLayout && (
               <button
+                id="consolidation-layout-toggle-btn"
                 onClick={onToggleLayout}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl flex items-center gap-1.5 text-xs font-bold transition-all shadow-xs"
-                title={isFullWidth ? "Split screen with reading passage" : "Expand to full width masterclass"}
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+                title={isFullWidth ? 'Switch to Split-Screen (Passage + Consolidation)' : 'Switch to Full-Width View'}
               >
                 {isFullWidth ? (
                   <>
                     <Columns className="w-3.5 h-3.5 text-blue-400" />
-                    <span className="hidden sm:inline">Split with Passage</span>
+                    <span className="hidden sm:inline">Split View</span>
                   </>
                 ) : (
                   <>
                     <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
-                    <span className="hidden sm:inline">Full Width Canvas</span>
+                    <span className="hidden sm:inline">Full Width</span>
                   </>
                 )}
               </button>
             )}
 
-            {/* Progress Pill */}
-            <div className="bg-slate-800/90 border border-slate-700 px-3.5 py-2 rounded-xl flex items-center gap-3 shadow-xs">
-              <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">
-                <BrainCircuit className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-[10px] font-semibold text-slate-400 uppercase">Mastery</div>
-                <div className="text-xs sm:text-sm font-bold text-white">
-                  {totalCorrectTasks} / {totalTasks} Solved
-                </div>
-              </div>
-            </div>
+            {onSwitchToPractice && (
+              <button
+                id="consolidation-back-to-practice-btn"
+                onClick={onSwitchToPractice}
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+                <span>Return to Questions</span>
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Primary Sub-Tabs */}
-        <div className="flex items-center gap-1.5 mt-4 overflow-x-auto pb-1 scrollbar-none border-t border-slate-800/80 pt-3">
+        {/* 4 Main Module Navigation Tabs */}
+        <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-800/80 overflow-x-auto pb-1 scrollbar-none">
           <button
             id="tab-consolidation-vocab"
             onClick={() => setActiveTab('vocabulary')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'vocabulary'
                 ? 'bg-blue-600 text-white shadow-xs'
                 : 'text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>Key Lexicon & Phrases ({CONSOLIDATION_VOCABULARY.length})</span>
+            <BookmarkCheck className="w-3.5 h-3.5" />
+            <span>Key Vocabulary ({CONSOLIDATION_VOCABULARY.length})</span>
           </button>
 
           <button
             id="tab-consolidation-grammar"
             onClick={() => setActiveTab('grammar')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'grammar'
                 ? 'bg-blue-600 text-white shadow-xs'
                 : 'text-slate-300 hover:bg-slate-800 hover:text-white'
@@ -261,7 +313,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
           <button
             id="tab-consolidation-paraphrase"
             onClick={() => setActiveTab('paraphrases')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'paraphrases'
                 ? 'bg-blue-600 text-white shadow-xs'
                 : 'text-slate-300 hover:bg-slate-800 hover:text-white'
@@ -274,7 +326,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
           <button
             id="tab-consolidation-activities"
             onClick={() => setActiveTab('activities')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 relative ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 relative cursor-pointer ${
               activeTab === 'activities'
                 ? 'bg-amber-500 text-slate-950 font-extrabold shadow-xs'
                 : 'text-amber-300 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20'
@@ -324,7 +376,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                     <button
                       key={band}
                       onClick={() => setSelectedBand(band)}
-                      className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors shrink-0 ${
+                      className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors shrink-0 cursor-pointer ${
                         selectedBand === band
                           ? 'bg-slate-900 text-white'
                           : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -348,7 +400,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                       setVocabSearch('');
                       setSelectedBand('all');
                     }}
-                    className="text-blue-600 hover:text-blue-800 font-bold hover:underline"
+                    className="text-blue-600 hover:text-blue-800 font-bold hover:underline cursor-pointer"
                   >
                     Reset Filters
                   </button>
@@ -372,7 +424,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                             <button
                               onClick={() => playPronunciation(item.word)}
                               title="Listen to British pronunciation"
-                              className="p-1 rounded-md text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                              className="p-1 rounded-md text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
                             >
                               <Volume2 className="w-4 h-4" />
                             </button>
@@ -388,18 +440,28 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                         </span>
                       </div>
 
-                      {/* Definition */}
-                      <p className="text-xs sm:text-sm text-slate-700 mt-2.5 leading-relaxed font-medium">
-                        {item.definition}
-                      </p>
+                      {/* English Definition */}
+                      {(languageMode === 'en' || languageMode === 'bilingual') && (
+                        <p className="text-xs sm:text-sm text-slate-700 mt-2.5 leading-relaxed font-medium">
+                          {item.definition}
+                        </p>
+                      )}
 
-                      {/* Passage Context Quote */}
+                      {/* Vietnamese Definition */}
+                      {(languageMode === 'vi' || languageMode === 'bilingual') && item.definitionVi && (
+                        <div className="mt-1.5 p-2 rounded-md bg-blue-50/60 border border-blue-100 text-xs text-blue-950 font-sans leading-relaxed">
+                          <span className="font-bold text-blue-900">🇻🇳 Nghĩa tiếng Việt: </span>
+                          <span>{item.definitionVi}</span>
+                        </div>
+                      )}
+
+                      {/* Passage Context Quote - Always kept in English as instructed */}
                       <div className="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 text-xs">
                         <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 mb-1">
                           <span>Original In-Text Context:</span>
                           <button
                             onClick={() => onJumpToParagraph(item.paragraphRef)}
-                            className="text-blue-600 hover:text-blue-800 flex items-center gap-0.5 hover:underline font-bold"
+                            className="text-blue-600 hover:text-blue-800 flex items-center gap-0.5 hover:underline font-bold cursor-pointer"
                           >
                             <span>[Paragraph {item.paragraphRef}]</span>
                             <ExternalLink className="w-2.5 h-2.5" />
@@ -453,7 +515,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                       setVocabSearch('');
                       setSelectedBand('all');
                     }}
-                    className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold"
+                    className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold cursor-pointer"
                   >
                     Clear Search
                   </button>
@@ -472,7 +534,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                 </div>
                 <button
                   onClick={toggleAllGrammar}
-                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg font-bold flex items-center gap-1.5 transition-colors"
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   {isAllGrammarOpen ? (
                     <>
@@ -504,7 +566,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                           [item.id]: !isOpen,
                         }))
                       }
-                      className="w-full p-4 sm:p-5 flex items-start justify-between gap-4 text-left hover:bg-slate-50/50 transition-colors"
+                      className="w-full p-4 sm:p-5 flex items-start justify-between gap-4 text-left hover:bg-slate-50/50 transition-colors cursor-pointer"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -517,7 +579,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                               e.stopPropagation();
                               onJumpToParagraph(item.paragraphRef);
                             }}
-                            className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-0.5 hover:underline"
+                            className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-0.5 hover:underline cursor-pointer"
                           >
                             <span>Paragraph {item.paragraphRef}</span>
                             <ExternalLink className="w-2.5 h-2.5" />
@@ -544,7 +606,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                           </div>
                         </div>
 
-                        {/* Passage Example */}
+                        {/* Passage Example - original English extract */}
                         <div className="p-3 bg-white rounded-lg border border-slate-200">
                           <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">
                             Authentic Passage Extract (Para {item.paragraphRef})
@@ -554,21 +616,39 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                           </p>
                         </div>
 
-                        {/* Explanation */}
-                        <div>
-                          <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wide mb-1">
+                        {/* Linguistic Analysis (English & Vietnamese) */}
+                        <div className="space-y-2">
+                          <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wide">
                             Linguistic Analysis
                           </div>
-                          <p className="text-slate-700 leading-relaxed">{item.explanation}</p>
+                          {(languageMode === 'en' || languageMode === 'bilingual') && (
+                            <p className="text-slate-700 leading-relaxed">{item.explanation}</p>
+                          )}
+                          {(languageMode === 'vi' || languageMode === 'bilingual') && item.explanationVi && (
+                            <div className="p-2.5 rounded-md bg-indigo-50/60 border border-indigo-100 text-xs text-indigo-950 leading-relaxed">
+                              <span className="font-bold text-indigo-900">🇻🇳 Phân tích ngữ pháp: </span>
+                              <span>{item.explanationVi}</span>
+                            </div>
+                          )}
                         </div>
 
                         {/* IELTS Test Application & Writing Tip */}
-                        <div className="p-3 bg-amber-50/80 rounded-lg border border-amber-200">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900 mb-1">
+                        <div className="p-3 bg-amber-50/80 rounded-lg border border-amber-200 space-y-2">
+                          <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
                             <Lightbulb className="w-3.5 h-3.5 text-amber-600" />
                             <span>IELTS Reading & Writing Application</span>
                           </div>
-                          <p className="text-xs text-amber-900/90 leading-relaxed">{item.ieltsApplication}</p>
+                          
+                          {(languageMode === 'en' || languageMode === 'bilingual') && (
+                            <p className="text-xs text-amber-900/90 leading-relaxed">{item.ieltsApplication}</p>
+                          )}
+
+                          {(languageMode === 'vi' || languageMode === 'bilingual') && item.ieltsApplicationVi && (
+                            <p className="text-xs text-amber-950/90 pt-1 border-t border-amber-200/60">
+                              <span className="font-bold">🇻🇳 Ứng dụng thi: </span>
+                              <span>{item.ieltsApplicationVi}</span>
+                            </p>
+                          )}
                           
                           <div className="mt-2 pt-2 border-t border-amber-200/60 text-xs text-amber-950 font-medium">
                             <span className="font-bold">Model Task 2 Sentence: </span>
@@ -604,12 +684,19 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                     className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-xs space-y-3"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                        {pair.technique}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                          {pair.technique}
+                        </span>
+                        {languageMode !== 'en' && pair.techniqueVi && (
+                          <span className="text-xs text-slate-500 italic">
+                            ({pair.techniqueVi})
+                          </span>
+                        )}
+                      </div>
                       <button
                         onClick={() => onJumpToParagraph(pair.paragraphRef)}
-                        className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-0.5 hover:underline"
+                        className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-0.5 hover:underline cursor-pointer"
                       >
                         <span>Paragraph {pair.paragraphRef}</span>
                         <ExternalLink className="w-2.5 h-2.5" />
@@ -638,9 +725,19 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                       </div>
                     </div>
 
-                    <div className="text-xs text-slate-600 bg-slate-50/80 p-2.5 rounded-lg border border-slate-200/60">
-                      <span className="font-bold text-slate-700">Exam Strategy Note: </span>
-                      {pair.explanation}
+                    <div className="text-xs text-slate-700 bg-slate-50/80 p-2.5 rounded-lg border border-slate-200/60 space-y-1">
+                      {(languageMode === 'en' || languageMode === 'bilingual') && (
+                        <div>
+                          <span className="font-bold text-slate-800">Exam Strategy Note: </span>
+                          <span>{pair.explanation}</span>
+                        </div>
+                      )}
+                      {(languageMode === 'vi' || languageMode === 'bilingual') && pair.explanationVi && (
+                        <div className="pt-1 text-slate-600 border-t border-slate-200/50">
+                          <span className="font-bold text-blue-900">🇻🇳 Ghi chú chiến lược: </span>
+                          <span>{pair.explanationVi}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -656,7 +753,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                 <button
                   id="activity-tab-all"
                   onClick={() => setActiveActivityTab('all')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer ${
                     activeActivityTab === 'all'
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -669,7 +766,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                 <button
                   id="activity-tab-matching"
                   onClick={() => setActiveActivityTab('matching')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer ${
                     activeActivityTab === 'matching'
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -686,7 +783,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                 <button
                   id="activity-tab-gapfill"
                   onClick={() => setActiveActivityTab('gapfill')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer ${
                     activeActivityTab === 'gapfill'
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -703,7 +800,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                 <button
                   id="activity-tab-reference"
                   onClick={() => setActiveActivityTab('reference')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer ${
                     activeActivityTab === 'reference'
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -720,7 +817,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                 <button
                   id="activity-tab-trans"
                   onClick={() => setActiveActivityTab('transformation')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer ${
                     activeActivityTab === 'transformation'
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -746,6 +843,11 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                       <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
                         Select an academic term on the left, then click its corresponding definition on the right.
                       </p>
+                      {languageMode !== 'en' && (
+                        <p className="text-xs text-blue-700 italic mt-0.5">
+                          Ghép từ vựng học thuật với định nghĩa phù hợp theo ngữ cảnh bài đọc.
+                        </p>
+                      )}
                     </div>
                     {activeActivityTab === 'all' && (
                       <span className="text-xs font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md">
@@ -770,7 +872,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                             key={task.id}
                             onClick={() => handleTermClick(task.id)}
                             disabled={matchingSubmitted}
-                            className={`w-full p-3 rounded-lg border text-left text-xs sm:text-sm font-bold transition-all flex items-center justify-between ${
+                            className={`w-full p-3 rounded-lg border text-left text-xs sm:text-sm font-bold transition-all flex items-center justify-between cursor-pointer ${
                               matchingSubmitted
                                 ? isCorrect
                                   ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
@@ -808,7 +910,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                             key={task.id}
                             onClick={() => handleDefClick(task.id)}
                             disabled={matchingSubmitted}
-                            className={`w-full p-3 rounded-lg border text-left text-xs transition-all ${
+                            className={`w-full p-3 rounded-lg border text-left text-xs transition-all cursor-pointer ${
                               matchingSubmitted
                                 ? isCorrect
                                   ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
@@ -816,11 +918,16 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                                 : isPaired
                                 ? 'bg-slate-100 border-slate-300 text-slate-800 font-medium'
                                 : matchingSelectedTerm
-                                ? 'bg-white border-blue-300 text-slate-800 hover:bg-blue-50/50 cursor-pointer ring-1 ring-blue-200'
+                                ? 'bg-white border-blue-300 text-slate-800 hover:bg-blue-50/50 ring-1 ring-blue-200'
                                 : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                             }`}
                           >
                             <div className="font-semibold text-slate-900">{task.definition}</div>
+                            {languageMode !== 'en' && task.definitionVi && (
+                              <div className="text-[11px] text-blue-700 font-normal mt-0.5">
+                                🇻🇳 {task.definitionVi}
+                              </div>
+                            )}
                             <div className="text-[11px] text-slate-500 mt-1 italic">Context: {task.context}</div>
                           </button>
                         );
@@ -844,7 +951,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                       {matchingSubmitted ? (
                         <button
                           onClick={handleResetMatching}
-                          className="px-4 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 flex items-center gap-1"
+                          className="px-4 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 flex items-center gap-1 cursor-pointer"
                         >
                           <RotateCcw className="w-3.5 h-3.5" />
                           <span>Try Again</span>
@@ -853,7 +960,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                         <button
                           onClick={handleCheckMatching}
                           disabled={Object.keys(matchingPairs).length === 0}
-                          className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-xs"
+                          className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-xs cursor-pointer"
                         >
                           Check Matches
                         </button>
@@ -862,7 +969,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                       {activeActivityTab === 'matching' && (
                         <button
                           onClick={() => setActiveActivityTab('gapfill')}
-                          className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 flex items-center gap-1"
+                          className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 flex items-center gap-1 cursor-pointer"
                         >
                           <span>Next: Gap-Fill</span>
                           <ArrowRight className="w-3.5 h-3.5" />
@@ -915,7 +1022,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                                 [task.id]: !showHint,
                               }))
                             }
-                            className="text-xs text-amber-700 hover:text-amber-800 flex items-center gap-1 font-semibold"
+                            className="text-xs text-amber-700 hover:text-amber-800 flex items-center gap-1 font-semibold cursor-pointer"
                           >
                             <HelpCircle className="w-3.5 h-3.5" />
                             <span>{showHint ? 'Hide Hint' : 'Show Hint'}</span>
@@ -923,12 +1030,17 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                         </div>
 
                         {showHint && (
-                          <div className="p-2.5 rounded-lg bg-amber-50 text-xs text-amber-900 border border-amber-200">
-                            <span className="font-bold">Clue: </span>{task.hint}
+                          <div className="p-2.5 rounded-lg bg-amber-50 text-xs text-amber-900 border border-amber-200 space-y-1">
+                            <div><span className="font-bold">Clue: </span>{task.hint}</div>
+                            {languageMode !== 'en' && task.hintVi && (
+                              <div className="pt-1 border-t border-amber-200/60 text-amber-950 font-normal">
+                                <span className="font-bold">🇻🇳 Gợi ý: </span>{task.hintVi}
+                              </div>
+                            )}
                           </div>
                         )}
 
-                        <p className="text-xs sm:text-sm text-slate-900 font-medium leading-relaxed">
+                        <p className="text-xs sm:text-sm text-slate-900 font-medium leading-relaxed font-serif">
                           {task.sentence}
                         </p>
 
@@ -950,7 +1062,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                                   }));
                                 }}
                                 disabled={isChecked && isCorrect}
-                                className={`p-2 rounded-lg text-xs font-semibold border transition-all text-center ${
+                                className={`p-2 rounded-lg text-xs font-semibold border transition-all text-center cursor-pointer ${
                                   isChecked
                                     ? opt === task.targetWord
                                       ? 'bg-emerald-50 border-emerald-400 text-emerald-900 font-bold'
@@ -998,16 +1110,24 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                               }))
                             }
                             disabled={!selectedAnswer}
-                            className="px-3 py-1 rounded-md text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-40 transition-colors"
+                            className="px-3 py-1 rounded-md text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-40 transition-colors cursor-pointer"
                           >
                             Check
                           </button>
                         </div>
 
                         {isChecked && (
-                          <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700">
-                            <span className="font-bold text-slate-800">Why this works: </span>
-                            {task.explanation}
+                          <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1">
+                            <div>
+                              <span className="font-bold text-slate-800">Why this works: </span>
+                              {task.explanation}
+                            </div>
+                            {languageMode !== 'en' && task.explanationVi && (
+                              <div className="pt-1 border-t border-slate-200/60 text-slate-600">
+                                <span className="font-bold text-blue-900">🇻🇳 Giải thích chi tiết: </span>
+                                {task.explanationVi}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
@@ -1018,14 +1138,14 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                     <div className="flex items-center justify-between pt-2">
                       <button
                         onClick={() => setActiveActivityTab('matching')}
-                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1"
+                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1 cursor-pointer"
                       >
                         <ArrowLeft className="w-3.5 h-3.5" />
                         <span>Previous: Matching</span>
                       </button>
                       <button
                         onClick={() => setActiveActivityTab('reference')}
-                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1"
+                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1 cursor-pointer"
                       >
                         <span>Next: Reference Hunt</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -1071,7 +1191,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                           </span>
                           <button
                             onClick={() => onJumpToParagraph(task.paragraphRef)}
-                            className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-0.5 hover:underline"
+                            className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-0.5 hover:underline cursor-pointer"
                           >
                             <span>Paragraph {task.paragraphRef}</span>
                             <ExternalLink className="w-2.5 h-2.5" />
@@ -1101,7 +1221,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                                     [task.id]: false,
                                   }));
                                 }}
-                                className={`w-full p-3 rounded-lg border text-left text-xs sm:text-sm transition-all flex items-start gap-2.5 ${
+                                className={`w-full p-3 rounded-lg border text-left text-xs sm:text-sm transition-all flex items-start gap-2.5 cursor-pointer ${
                                   isChecked
                                     ? optIdx === task.correctIndex
                                       ? 'bg-emerald-50 border-emerald-400 text-emerald-950 font-bold'
@@ -1151,16 +1271,24 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                               }))
                             }
                             disabled={selectedOpt === undefined}
-                            className="px-3 py-1 rounded-md text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-40 transition-colors"
+                            className="px-3 py-1 rounded-md text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-40 transition-colors cursor-pointer"
                           >
                             Check Answer
                           </button>
                         </div>
 
                         {isChecked && (
-                          <div className="p-2.5 rounded-lg bg-blue-50/70 border border-blue-200 text-xs text-slate-800">
-                            <span className="font-bold text-blue-900">Cohesion Breakdown: </span>
-                            {task.explanation}
+                          <div className="p-2.5 rounded-lg bg-blue-50/70 border border-blue-200 text-xs text-slate-800 space-y-1">
+                            <div>
+                              <span className="font-bold text-blue-900">Cohesion Breakdown: </span>
+                              {task.explanation}
+                            </div>
+                            {languageMode !== 'en' && task.explanationVi && (
+                              <div className="pt-1 border-t border-blue-200/60 text-slate-700">
+                                <span className="font-bold text-blue-900">🇻🇳 Phân tích liên kết câu: </span>
+                                {task.explanationVi}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
@@ -1171,14 +1299,14 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                     <div className="flex items-center justify-between pt-2">
                       <button
                         onClick={() => setActiveActivityTab('gapfill')}
-                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1"
+                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1 cursor-pointer"
                       >
                         <ArrowLeft className="w-3.5 h-3.5" />
                         <span>Previous: Gap-Fill</span>
                       </button>
                       <button
                         onClick={() => setActiveActivityTab('transformation')}
-                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1"
+                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1 cursor-pointer"
                       >
                         <span>Next: Transformation</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -1253,7 +1381,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                                     [task.id]: false,
                                   }));
                                 }}
-                                className={`w-full p-3 rounded-lg border text-left text-xs sm:text-sm transition-all flex items-start gap-2.5 ${
+                                className={`w-full p-3 rounded-lg border text-left text-xs sm:text-sm transition-all flex items-start gap-2.5 cursor-pointer ${
                                   isChecked
                                     ? optIdx === task.correctIndex
                                       ? 'bg-emerald-50 border-emerald-400 text-emerald-950 font-bold'
@@ -1303,16 +1431,24 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                               }))
                             }
                             disabled={selectedOpt === undefined}
-                            className="px-3 py-1 rounded-md text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-40 transition-colors"
+                            className="px-3 py-1 rounded-md text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-40 transition-colors cursor-pointer"
                           >
                             Check Structure
                           </button>
                         </div>
 
                         {isChecked && (
-                          <div className="p-2.5 rounded-lg bg-purple-50/70 border border-purple-200 text-xs text-slate-800">
-                            <span className="font-bold text-purple-900">Grammatical Explanation: </span>
-                            {task.explanation}
+                          <div className="p-2.5 rounded-lg bg-purple-50/70 border border-purple-200 text-xs text-slate-800 space-y-1">
+                            <div>
+                              <span className="font-bold text-purple-900">Grammatical Explanation: </span>
+                              {task.explanation}
+                            </div>
+                            {languageMode !== 'en' && task.explanationVi && (
+                              <div className="pt-1 border-t border-purple-200/60 text-slate-700">
+                                <span className="font-bold text-purple-900">🇻🇳 Phân tích ngữ pháp chuyên sâu: </span>
+                                {task.explanationVi}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
@@ -1323,14 +1459,14 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
                     <div className="flex items-center justify-between pt-2">
                       <button
                         onClick={() => setActiveActivityTab('reference')}
-                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1"
+                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1 cursor-pointer"
                       >
                         <ArrowLeft className="w-3.5 h-3.5" />
                         <span>Previous: Reference Hunt</span>
                       </button>
                       <button
                         onClick={() => setActiveActivityTab('all')}
-                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1"
+                        className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1 cursor-pointer"
                       >
                         <span>View All Tasks</span>
                         <ListFilter className="w-3.5 h-3.5" />

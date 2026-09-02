@@ -6,6 +6,7 @@ export interface VocabularyItem {
   phonetic: string;
   partOfSpeech: string;
   definition: string;
+  definitionVi: string;
   passageContext: string;
   paragraphRef: number;
   collocations: string[];
@@ -21,7 +22,9 @@ export interface GrammarStructureItem {
   passageExample: string;
   paragraphRef: number;
   explanation: string;
+  explanationVi?: string;
   ieltsApplication: string;
+  ieltsApplicationVi?: string;
   practiceExample: string;
 }
 
@@ -30,7 +33,9 @@ export interface ParaphrasePair {
   originalText: string;
   paraphrasedText: string;
   technique: string;
+  techniqueVi?: string;
   explanation: string;
+  explanationVi?: string;
   paragraphRef: number;
 }
 
@@ -38,6 +43,7 @@ export interface MatchingTaskItem {
   id: string;
   term: string;
   definition: string;
+  definitionVi?: string;
   context: string;
 }
 
@@ -47,7 +53,9 @@ export interface GapFillTaskItem {
   targetWord: string;
   options: string[];
   hint: string;
+  hintVi?: string;
   explanation: string;
+  explanationVi?: string;
 }
 
 export interface ReferenceTaskItem {
@@ -58,6 +66,7 @@ export interface ReferenceTaskItem {
   options: string[];
   correctIndex: number;
   explanation: string;
+  explanationVi?: string;
 }
 
 export interface TransformationTaskItem {
@@ -68,6 +77,7 @@ export interface TransformationTaskItem {
   options: string[];
   correctIndex: number;
   explanation: string;
+  explanationVi?: string;
 }
 
 export interface ParagraphData {
@@ -78,6 +88,7 @@ export interface ParagraphData {
 
 export interface QuestionTip {
   text: string;
+  textVi?: string;
 }
 
 export interface QuestionItem {
@@ -88,24 +99,29 @@ export interface QuestionItem {
   instruction?: string;
   maxWords?: number;
   tip?: string;
+  tipVi?: string;
   officialAnswer: string;
   acceptedAnswers: string[];
   paragraphRef: number;
   paragraphQuote: string;
   explanation: string;
+  explanationVi?: string;
 }
 
 export interface TipStrip {
   title: string;
   questionRange: string;
   bullets: string[];
+  bulletsVi?: string[];
 }
 
 export interface HighlightItem {
   id: string;
-  paragraphId: number;
-  startOffset: number;
-  endOffset: number;
+  targetType?: 'passage' | 'question';
+  paragraphId?: number;
+  questionId?: number;
+  startOffset?: number;
+  endOffset?: number;
   text: string;
   color: 'yellow' | 'green' | 'cyan' | 'pink';
 }

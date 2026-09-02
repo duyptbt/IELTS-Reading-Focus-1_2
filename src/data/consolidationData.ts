@@ -15,6 +15,7 @@ export const CONSOLIDATION_VOCABULARY: VocabularyItem[] = [
     phonetic: '/ˌself.səˈfɪʃ.ən.si/',
     partOfSpeech: 'noun (uncountable)',
     definition: 'The state or quality of being able to supply one\'s own needs without external assistance.',
+    definitionVi: 'Sự tự cung tự cấp (khả năng tự đáp ứng nhu cầu cuộc sống và năng lượng mà không cần hỗ trợ từ bên ngoài).',
     passageContext: '...and this has encouraged a culture of self-sufficiency and careful use of resources.',
     paragraphRef: 1,
     collocations: ['culture of self-sufficiency', 'economic self-sufficiency', 'strive for self-sufficiency'],
@@ -27,6 +28,7 @@ export const CONSOLIDATION_VOCABULARY: VocabularyItem[] = [
     phonetic: '/ˈkæp.ɪŋ/',
     partOfSpeech: 'verb (present participle) / noun',
     definition: 'Setting an official upper limit on an amount, rate, or level of consumption.',
+    definitionVi: 'Áp đặt mức trần / giới hạn tối đa (thiết lập mức tiêu thụ hoặc công suất tối đa cho phép).',
     passageContext: 'Eigg manages electricity demand mainly by capping the instantaneous power that can be used...',
     paragraphRef: 3,
     collocations: ['cap emissions', 'capping consumption', 'impose a cap on'],
@@ -39,6 +41,7 @@ export const CONSOLIDATION_VOCABULARY: VocabularyItem[] = [
     phonetic: '/ˌɪn.stənˈteɪ.ni.əs/',
     partOfSpeech: 'adjective',
     definition: 'Happening, existing, or measured immediately at a single specific moment in time.',
+    definitionVi: 'Tức thời (xảy ra hoặc được đo lường ngay tại một thời điểm tức thì).',
     passageContext: '...by capping the instantaneous power that can be used to five kilowatts (kW) for a household...',
     paragraphRef: 3,
     collocations: ['instantaneous power', 'instantaneous response', 'instantaneous feedback'],
@@ -51,6 +54,7 @@ export const CONSOLIDATION_VOCABULARY: VocabularyItem[] = [
     phonetic: '/ˈkjuː.mjə.lə.tɪv/',
     partOfSpeech: 'adjective',
     definition: 'Increasing in quantity or degree by continuous successive additions over a period of time.',
+    definitionVi: 'Tích lũy / dồn tích (tăng dần qua việc cộng dồn liên tục theo thời gian).',
     passageContext: '...display current and cumulative electricity usage, and sound an alarm when consumption reaches...',
     paragraphRef: 3,
     collocations: ['cumulative effect', 'cumulative total', 'cumulative data', 'cumulative impact'],
@@ -63,6 +67,7 @@ export const CONSOLIDATION_VOCABULARY: VocabularyItem[] = [
     phonetic: '/pəʊstˈpəʊn/',
     partOfSpeech: 'verb (transitive)',
     definition: 'To arrange for something to take place at a later time or date than originally planned.',
+    definitionVi: 'Trì hoãn / hoãn lại (sắp xếp thực hiện một hành động hoặc nhu cầu vào thời điểm muộn hơn).',
     passageContext: 'Residents then take steps to temporarily reduce electricity demand further still, or postpone demand...',
     paragraphRef: 4,
     collocations: ['postpone demand', 'postpone an event', 'postpone action until'],
@@ -75,6 +80,7 @@ export const CONSOLIDATION_VOCABULARY: VocabularyItem[] = [
     phonetic: '/ˈek.wɪ.tə.bəl/',
     partOfSpeech: 'adjective',
     definition: 'Characterized by fairness, impartiality, and equal distribution of rights or resources.',
+    definitionVi: 'Công bằng / bình đẳng (được phân phối công bằng, không thiên vị cho mọi đối tượng).',
     passageContext: 'One of the incentives for capping electricity use, rather than charging different amounts... was to make access to energy equitable.',
     paragraphRef: 9,
     collocations: ['equitable distribution', 'equitable access', 'equitable treatment', 'equitable society'],
@@ -87,6 +93,7 @@ export const CONSOLIDATION_VOCABULARY: VocabularyItem[] = [
     phonetic: '/ˌɪr.ɪˈspek.tɪv əv/',
     partOfSpeech: 'prepositional phrase',
     definition: 'Without taking into account; regardless of external conditions or factors.',
+    definitionVi: 'Bất kể / không phân biệt (không phụ thuộc hoặc bị chi phối bởi yếu tố khác).',
     passageContext: 'Every household has the same five kW cap, irrespective of income...',
     paragraphRef: 9,
     collocations: ['irrespective of cost', 'irrespective of background', 'irrespective of age'],
@@ -99,6 +106,7 @@ export const CONSOLIDATION_VOCABULARY: VocabularyItem[] = [
     phonetic: '/jiːld/',
     partOfSpeech: 'verb (transitive/intransitive)',
     definition: 'To produce, generate, or supply a desirable result, benefit, or product.',
+    definitionVi: 'Mang lại / sinh ra (tạo ra hoặc đem lại kết quả, lợi ích hoặc sản lượng tích cực).',
     passageContext: 'Improved home insulation and heating has also yielded benefits, making it more affordable...',
     paragraphRef: 9,
     collocations: ['yield benefits', 'yield positive results', 'yield high returns'],
@@ -111,6 +119,7 @@ export const CONSOLIDATION_VOCABULARY: VocabularyItem[] = [
     phonetic: '/ɪˌlɪm.ɪˈneɪ.ʃən/',
     partOfSpeech: 'noun (uncountable)',
     definition: 'The complete removal, eradication, or exclusion of something unwanted.',
+    definitionVi: 'Sự loại bỏ hoàn toàn / triệt tiêu (việc xóa bỏ triệt để một vấn đề hoặc tác nhân tiêu cực).',
     passageContext: '...better treatment of drinking water in some houses, and the elimination of the constant noise of diesel generators.',
     paragraphRef: 9,
     collocations: ['complete elimination', 'elimination of emissions', 'elimination of poverty'],
@@ -129,8 +138,12 @@ export const CONSOLIDATION_GRAMMAR: GrammarStructureItem[] = [
     paragraphRef: 7,
     explanation:
       'Present participle clauses with comma + "-ing" (e.g., "resulting in", "freeing them from", "so distributing") allow academic writers to express logical consequences or secondary actions concisely without starting new repetitive sentences.',
+    explanationVi:
+      'Mệnh đề phân từ với dấu phẩy + "-ing" (như "resulting in", "freeing them from", "so distributing") giúp diễn đạt hệ quả logic hoặc hành động thứ cấp một cách ngắn gọn, súc tích trong văn phong học thuật mà không làm câu bị rời rạc.',
     ieltsApplication:
       'Essential for IELTS Academic Writing Task 1 & 2 to achieve Band 8 in Grammatical Range and Accuracy (GRA). In Reading, recognize that "-ing" phrases often state consequences or direct impacts.',
+    ieltsApplicationVi:
+      'Cấu trúc quan trọng để đạt Band 8 tiêu chí Ngữ pháp (GRA) trong IELTS Writing. Trong Reading, nhận biết cụm "-ing" thường diễn đạt kết quả trực tiếp hoặc tác động tiếp theo.',
     practiceExample:
       'The government invested heavily in public transit, resulting in a dramatic decline in urban traffic congestion.',
   },
@@ -143,8 +156,12 @@ export const CONSOLIDATION_GRAMMAR: GrammarStructureItem[] = [
     paragraphRef: 2,
     explanation:
       'Academic texts utilize impersonal structures ("it became apparent that...", "new energy supplies are being developed") to present factual conclusions objectively rather than attributing personal opinions to individual researchers.',
+    explanationVi:
+      'Các bài báo học thuật sử dụng thể bị động khách quan ("it became apparent that...", "new energy supplies are being developed") nhằm trình bày kết luận một cách khách quan, tập trung vào sự thật khoa học thay vì ý kiến chủ quan.',
     ieltsApplication:
       'Helps you identify key claims, scientific findings, and institutional consensus in IELTS Reading passages.',
+    ieltsApplicationVi:
+      'Giúp người học định vị các luận điểm chính, phát hiện nghiên cứu và quan điểm đồng thuận của tổ chức trong bài đọc IELTS.',
     practiceExample:
       'It has been widely demonstrated that reducing carbon emissions yields immediate environmental dividends.',
   },
@@ -157,8 +174,12 @@ export const CONSOLIDATION_GRAMMAR: GrammarStructureItem[] = [
     paragraphRef: 1,
     explanation:
       'Concessive linkers introduce a counter-premise or surprising contrast that highlights the significance of the main clause data.',
+    explanationVi:
+      'Các liên từ nhượng bộ (như "although", "while", "as opposed to") giới thiệu tiền đề đối lập hoặc bất ngờ, làm nổi bật ý nghĩa của dữ liệu ở mệnh đề chính.',
     ieltsApplication:
       'True/False/Not Given questions frequently hinge on understanding concession versus direct opposition (e.g. "although X, Y is true").',
+    ieltsApplicationVi:
+      'Dạng bài True/False/Not Given thường kiểm tra sự phân biệt giữa nhượng bộ và đối lập tuyệt đối (ví dụ: dù có tiện nghi X nhưng lượng khí thải Y vẫn thấp).',
     practiceExample:
       'Although renewable infrastructure requires substantial upfront investment, long-term operational costs remain remarkably low.',
   },
@@ -171,8 +192,12 @@ export const CONSOLIDATION_GRAMMAR: GrammarStructureItem[] = [
     paragraphRef: 9,
     explanation:
       '"Irrespective of + noun" is a high-level formal connective signifying that the primary condition applies universally regardless of variations in the secondary factor.',
+    explanationVi:
+      'Cụm "Irrespective of + noun" là liên từ trang trọng biểu thị điều kiện áp dụng phổ quát cho tất cả đối tượng mà không bị ảnh hưởng bởi biến số thu nhập hay địa vị.',
     ieltsApplication:
       'Frequently tested in Short Answer and Summary Completion where examiners test understanding of unconditional policies.',
+    ieltsApplicationVi:
+      'Thường gặp trong dạng Short Answer và T/F/NG nhằm kiểm tra việc hiểu đúng chính sách áp dụng vô điều kiện (unconditional).',
     practiceExample:
       'All citizens receive equal healthcare subsidies, irrespective of socioeconomic status.',
   },
@@ -184,7 +209,9 @@ export const CONSOLIDATION_PARAPHRASES: ParaphrasePair[] = [
     originalText: 'For the island community of about a hundred residents...',
     paraphrasedText: 'Approximately 100 people inhabit the Scottish island.',
     technique: 'Synonym replacement (about → approximately; residents → people inhabit)',
+    techniqueVi: 'Thay thế từ đồng nghĩa (about → approximately; residents → people inhabit)',
     explanation: 'IELTS Question 1 tested "approximately" against the passage word "about".',
+    explanationVi: 'Câu hỏi số 1 kiểm tra từ đồng nghĩa "approximately" với từ "about" trong bài đọc.',
     paragraphRef: 1,
   },
   {
@@ -192,7 +219,9 @@ export const CONSOLIDATION_PARAPHRASES: ParaphrasePair[] = [
     originalText: '...freeing them from dependence on diesel generators...',
     paraphrasedText: '...eliminating their reliance on fossil-fuel generators...',
     technique: 'Nominalization & synonym variation (dependence on → reliance on; freeing from → eliminating)',
+    techniqueVi: 'Danh từ hóa và biến thể từ đồng nghĩa (dependence on → reliance on; freeing from → eliminating)',
     explanation: 'Shows how IELTS transforms verbal clauses into formal nominal phrases in Reading options.',
+    explanationVi: 'Minh họa cách đề thi IELTS chuyển đổi mệnh đề phân từ thành cụm danh từ trang trọng (nominalization).',
     paragraphRef: 9,
   },
   {
@@ -200,7 +229,9 @@ export const CONSOLIDATION_PARAPHRASES: ParaphrasePair[] = [
     originalText: '...making access to energy equitable. Every household has the same five kW cap, irrespective of income...',
     paraphrasedText: '...ensuring fair and equal distribution of power resources across all social strata.',
     technique: 'Conceptual paraphrasing (equitable access / irrespective of income → fair and equal distribution across all social strata)',
+    techniqueVi: 'Paraphrase theo khái niệm (equitable access / irrespective of income → fair and equal distribution across all social strata)',
     explanation: 'Key comprehension point tested in True/False/Not Given questions.',
+    explanationVi: 'Điểm đọc hiểu mấu chốt được kiểm tra trong dạng bài True/False/Not Given (Q12).',
     paragraphRef: 9,
   },
   {
@@ -208,7 +239,9 @@ export const CONSOLIDATION_PARAPHRASES: ParaphrasePair[] = [
     originalText: 'Prior to the installation of the new electricity grid...',
     paraphrasedText: 'Before the modern power network was commissioned...',
     technique: 'Prepositional & vocabulary swap (Prior to → Before; installation of grid → power network commissioned)',
+    techniqueVi: 'Đổi cấu trúc giới từ và từ vựng (Prior to → Before; installation of grid → power network commissioned)',
     explanation: 'Tests temporal sequencing markers commonly used in IELTS timeline questions.',
+    explanationVi: 'Kiểm tra các cụm từ chỉ mốc thời gian ("Prior to" = "Before") trong dạng câu hỏi xác định trình tự thời gian.',
     paragraphRef: 7,
   },
 ];

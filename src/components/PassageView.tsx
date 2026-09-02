@@ -100,6 +100,7 @@ export const PassageView: React.FC<PassageViewProps> = ({
     if (highlighterColor && highlighterColor !== 'eraser') {
       const newHighlight: HighlightItem = {
         id: `hl-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        targetType: 'passage',
         paragraphId: pId,
         startOffset: 0,
         endOffset: 0,
@@ -132,6 +133,7 @@ export const PassageView: React.FC<PassageViewProps> = ({
     if (!floatingMenu) return;
     const newHighlight: HighlightItem = {
       id: `hl-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      targetType: 'passage',
       paragraphId: floatingMenu.paragraphId,
       startOffset: 0,
       endOffset: 0,
