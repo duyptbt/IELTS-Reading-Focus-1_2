@@ -345,7 +345,7 @@ export const ConsolidationView: React.FC<ConsolidationViewProps> = ({
 
       {/* Main Tab Content with internal scrolling */}
       <div className="flex-1 overflow-y-auto bg-slate-100/80 p-4 sm:p-6 w-full">
-        <div className={`mx-auto w-full ${isFullWidth ? 'max-w-6xl' : 'max-w-4xl'}`}>
+        <div className="w-full">
           {/* TAB 1: VOCABULARY */}
           {activeTab === 'vocabulary' && (
             <div className="space-y-4">

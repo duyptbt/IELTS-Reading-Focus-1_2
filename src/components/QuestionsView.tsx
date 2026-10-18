@@ -87,9 +87,9 @@ export const QuestionsView: React.FC<QuestionsViewProps> = ({
     }
   }, [isSubmitted, userAnswers]);
 
-  // Tip strip collapse state
-  const [isTipStrip1Open, setIsTipStrip1Open] = useState(true);
-  const [isTipStrip2Open, setIsTipStrip2Open] = useState(true);
+  // Tip strip collapse state - default to hide mode
+  const [isTipStrip1Open, setIsTipStrip1Open] = useState(false);
+  const [isTipStrip2Open, setIsTipStrip2Open] = useState(false);
 
   // Active question filter tab (All, 1-7 Short Answer, 8-13 T/F/NG)
   const [activeFilter, setActiveFilter] = useState<'all' | 'part1' | 'part2'>('all');
@@ -516,7 +516,7 @@ export const QuestionsView: React.FC<QuestionsViewProps> = ({
             {/* TIP STRIP: Questions 1-7 */}
             {mode === 'practice' && (
               <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 transition-all">
-                <div className="flex items-center justify-between mb-2">
+                <div className={`flex items-center justify-between ${isTipStrip1Open ? 'mb-2' : ''}`}>
                   <div className="flex items-center gap-2 text-blue-900 font-bold text-sm">
                     <Lightbulb className="w-4 h-4 text-blue-600" />
                     <span>IELTS Tip: Scanning & Strategy</span>
@@ -779,7 +779,7 @@ export const QuestionsView: React.FC<QuestionsViewProps> = ({
             {/* TIP STRIP: Questions 8-13 */}
             {mode === 'practice' && (
               <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 transition-all">
-                <div className="flex items-center justify-between mb-2">
+                <div className={`flex items-center justify-between ${isTipStrip2Open ? 'mb-2' : ''}`}>
                   <div className="flex items-center gap-2 text-blue-900 font-bold text-sm">
                     <Lightbulb className="w-4 h-4 text-blue-600" />
                     <span>IELTS Tip: TRUE / FALSE / NOT GIVEN Strategy</span>
